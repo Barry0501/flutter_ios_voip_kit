@@ -49,7 +49,7 @@ class CallKitCenter: NSObject {
         let providerConfiguration = CXProviderConfiguration(localizedName: self.localizedName)
         providerConfiguration.supportsVideo = self.supportVideo ?? false
         providerConfiguration.maximumCallsPerCallGroup = 1
-        providerConfiguration.maximumCallGroups = 2
+        providerConfiguration.maximumCallGroups = 1
         providerConfiguration.supportedHandleTypes = [.generic]
         providerConfiguration.iconTemplateImageData = UIImage(named: self.iconName)?.pngData()
         self.provider = CXProvider(configuration: providerConfiguration)
