@@ -14,7 +14,7 @@ class CallKitCenter: NSObject {
     private let controller = CXCallController()
     private let iconName: String
     private let localizedName: String
-    private let supportVideo: Bool
+    private(set) var supportVideo: Bool?
     private let skipRecallScreen: Bool
     private var provider: CXProvider?
     private var uuid = UUID()
@@ -47,7 +47,7 @@ class CallKitCenter: NSObject {
 
     func setup(delegate: CXProviderDelegate) {
         let providerConfiguration = CXProviderConfiguration(localizedName: self.localizedName)
-        providerConfiguration.supportsVideo = self.supportVideo
+        providerConfiguration.supportsVideo = self.supportVideo ?? false
         providerConfiguration.maximumCallsPerCallGroup = 1
         providerConfiguration.maximumCallGroups = 2
         providerConfiguration.supportedHandleTypes = [.generic]
@@ -60,7 +60,7 @@ class CallKitCenter: NSObject {
         self.uuid = UUID(uuidString: uuidString)!
         let handle = CXHandle(type: .generic, value: targetName)
         let startCallAction = CXStartCallAction(call: self.uuid, handle: handle)
-        startCallAction.isVideo = self.supportVideo
+        startCallAction.isVideo = self.supportVideo ?? false
         let transaction = CXTransaction(action: startCallAction)
         self.controller.request(transaction) { error in
             if let error = error {
@@ -69,19 +69,20 @@ class CallKitCenter: NSObject {
         }
     }
 
-    func incomingCall(uuidString: String, callerId: String, callerName: String, completion: @escaping (Error?) -> Void) {
+    func incomingCall(uuidString: String, callerId: String, callerName: String, hasVideo: Bool, completion: @escaping (Error?) -> Void) {
         self.uuidString = uuidString
         self.incomingCallerId = callerId
         self.incomingCallerName = callerName
         self.isReceivedIncomingCall = true
+        self.supportVideo = hasVideo
 
         self.uuid = UUID(uuidString: uuidString)!
         let update = CXCallUpdate()
         update.remoteHandle = CXHandle(type: .generic, value: callerName)
-        update.hasVideo = self.supportVideo
+        update.hasVideo = hasVideo
         update.supportsHolding = false
         update.supportsGrouping = false
-        update.supportsUngrouping = true
+        update.supportsUngrouping = false
         self.provider?.reportNewIncomingCall(with: self.uuid, update: update, completion: { error in
             if (error == nil) {
                 self.connectedOutgoingCall()

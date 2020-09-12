@@ -78,13 +78,13 @@ extension VoIPCenter: PKPushRegistryDelegate {
     // NOTE: iOS11 or more support
 
     public func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
-        print("🎈 VoIP didReceiveIncomingPushWith completion: \(payload.dictionaryPayload)")
+        print("🎈 [pushRegistry - iOS11 or more support]VoIP didReceiveIncomingPushWith completion: \(payload.dictionaryPayload)")
 
         let info = self.parse(payload: payload)
         let callerName = info?["incoming_caller_name"] as! String
         self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
                                         callerId: info?["incoming_caller_id"] as! String,
-                                        callerName: callerName) { error in
+                                        callerName: callerName, hasVideo: info?["has_video"] as! Bool) { error in
             if let error = error {
                 print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
                 return
@@ -105,7 +105,7 @@ extension VoIPCenter: PKPushRegistryDelegate {
         let callerName = info?["incoming_caller_name"] as! String
         self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
                                         callerId: info?["incoming_caller_id"] as! String,
-                                        callerName: callerName) { error in
+                                        callerName: callerName, hasVideo: info?["has_video"] as! Bool) { error in
             if let error = error {
                 print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
                 return
@@ -148,7 +148,8 @@ extension VoIPCenter: CXProviderDelegate {
         self.callKitCenter.answerCallAction = action
         self.eventSink?(["event": EventChannel.onDidAcceptIncomingCall.rawValue,
                          "uuid": self.callKitCenter.uuidString as Any,
-                         "incoming_caller_id": self.callKitCenter.incomingCallerId as Any])
+                         "incoming_caller_id": self.callKitCenter.incomingCallerId as Any,
+                         "has_video": self.callKitCenter.supportVideo as Any])
     }
 
     public func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
@@ -156,7 +157,8 @@ extension VoIPCenter: CXProviderDelegate {
         if (self.callKitCenter.isCalleeBeforeAcceptIncomingCall) {
             self.eventSink?(["event": EventChannel.onDidRejectIncomingCall.rawValue,
                              "uuid": self.callKitCenter.uuidString as Any,
-                             "incoming_caller_id": self.callKitCenter.incomingCallerId as Any])
+                             "incoming_caller_id": self.callKitCenter.incomingCallerId as Any,
+                             "has_video": self.callKitCenter.supportVideo as Any])
         }
 
         self.callKitCenter.disconnected(reason: .remoteEnded)

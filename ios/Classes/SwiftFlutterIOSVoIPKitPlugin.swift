@@ -105,6 +105,7 @@ public class SwiftFlutterIOSVoIPKitPlugin: NSObject {
         guard let args = call.arguments as? [String: Any],
             let uuid = args["uuid"] as? String,
             let callerId = args["callerId"] as? String,
+            let hasVideo = args["hasVideo"] as? Bool,
             let callerName = args["callerName"] as? String else {
                 result(FlutterError(code: "InvalidArguments testIncomingCall", message: nil, details: nil))
                 return
@@ -112,7 +113,7 @@ public class SwiftFlutterIOSVoIPKitPlugin: NSObject {
 
         self.voIPCenter.callKitCenter.incomingCall(uuidString: uuid,
                                                    callerId: callerId,
-                                                   callerName: callerName) { (error) in
+                                                   callerName: callerName,hasVideo: hasVideo) { (error) in
             if let error = error {
                 print("❌ testIncomingCall error: \(error.localizedDescription)")
                 result(FlutterError(code: "testIncomingCall",

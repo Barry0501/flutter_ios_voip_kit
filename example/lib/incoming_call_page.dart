@@ -178,6 +178,7 @@ class _IncomingCallPageState extends State<IncomingCallPage> {
                   uuid: Uuid().v4(),
                   callerId: dummyCallId,
                   callerName: dummyCallerName,
+                  hasVideo: false,
                 );
                 _timeOut();
               },

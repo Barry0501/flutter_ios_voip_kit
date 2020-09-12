@@ -162,8 +162,9 @@ class FlutterIOSVoIPKit {
     @required String uuid,
     @required String callerId,
     @required String callerName,
+    @required bool hasVideo,
   }) async {
-    print('🎈 testIncomingCall: $uuid, $callerId, $callerName');
+    //print('🎈 testIncomingCall: $uuid, $callerId, $callerName, hasVideo: $hasVideo');
 
     final isRelease = const bool.fromEnvironment('dart.vm.product');
     if (Platform.isAndroid || isRelease) {
@@ -174,6 +175,7 @@ class FlutterIOSVoIPKit {
       'uuid': uuid,
       'callerId': callerId,
       'callerName': callerName,
+      'hasVideo': hasVideo,
     });
   }
 
