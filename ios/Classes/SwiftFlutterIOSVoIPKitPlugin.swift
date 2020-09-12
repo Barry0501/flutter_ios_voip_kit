@@ -105,7 +105,7 @@ public class SwiftFlutterIOSVoIPKitPlugin: NSObject {
         guard let args = call.arguments as? [String: Any],
             let uuid = args["uuid"] as? String,
             let callerId = args["callerId"] as? String,
-            let hasVideo = args["hasVideo"] as? Bool,
+            let hasVideo = args["support_video"] as? Bool,
             let callerName = args["callerName"] as? String else {
                 result(FlutterError(code: "InvalidArguments testIncomingCall", message: nil, details: nil))
                 return
