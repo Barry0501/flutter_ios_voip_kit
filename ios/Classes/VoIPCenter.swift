@@ -105,7 +105,7 @@ extension VoIPCenter: PKPushRegistryDelegate {
         let callerName = info?["incoming_caller_name"] as! String
         self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
                                         callerId: info?["incoming_caller_id"] as! String,
-                                        callerName: callerName, hasVideo: info?["support_video"] as! Bool) { error in
+                                        callerName: callerName, hasVideo: info?["support_video"] as? Bool ?? false) { error in
             if let error = error {
                 print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
                 return
