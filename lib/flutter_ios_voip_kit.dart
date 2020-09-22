@@ -47,6 +47,7 @@ class FlutterIOSVoIPKit {
   /// If not called, make sure the app is calling [onDidAcceptIncomingCall] and [onDidRejectIncomingCall] in the Dart class(ex: main.dart) that is called immediately after the app is launched.
   IncomingAction onDidAcceptIncomingCall;
   IncomingAction onDidRejectIncomingCall;
+  IncomingAction onDidEndCall;
 
   StreamSubscription<dynamic> _eventSubscription;
 
@@ -221,6 +222,17 @@ class FlutterIOSVoIPKit {
           map['incoming_caller_id'],
         );
         break;
+      case 'onDidEndCall':
+        print('🎈 onDidEndCall($onDidEndCall): $map');
+
+        if (onDidEndCall == null) {
+          return;
+        }
+
+        onDidEndCall(
+          map['uuid'],
+          map['incoming_caller_id'],
+        );
     }
   }
 
