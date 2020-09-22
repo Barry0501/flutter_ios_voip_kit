@@ -97,7 +97,7 @@ extension VoIPCenter: PKPushRegistryDelegate {
         self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
                              "payload": info as Any,
                              "incoming_caller_name": callerName])
-            completion()
+           // completion()
     }
 
     // NOTE: iOS10 support
@@ -121,7 +121,7 @@ extension VoIPCenter: PKPushRegistryDelegate {
         self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
                              "payload": info as Any,
                              "incoming_caller_name": callerName])
-            completion()
+            //completion()
     }
 
     private func parse(payload: PKPushPayload) -> [String: Any]? {
