@@ -27,6 +27,7 @@ class VoIPCenter: NSObject {
         case onDidReceiveIncomingPush
         case onDidAcceptIncomingCall
         case onDidRejectIncomingCall
+        case onDidEndCall
     }
 
     // MARK: - PushKit
@@ -156,6 +157,12 @@ extension VoIPCenter: CXProviderDelegate {
         print("❎ VoIP CXEndCallAction")
         if (self.callKitCenter.isCalleeBeforeAcceptIncomingCall) {
             self.eventSink?(["event": EventChannel.onDidRejectIncomingCall.rawValue,
+                             "uuid": self.callKitCenter.uuidString as Any,
+                             "incoming_caller_id": self.callKitCenter.incomingCallerId as Any,
+                             "support_video": self.callKitCenter.supportVideo as Any])
+        } else {
+            print("❎ VoIP CXEndCallAction onDidEndCall")
+            self.eventSink?(["event": EventChannel.onDidEndCall.rawValue,
                              "uuid": self.callKitCenter.uuidString as Any,
                              "incoming_caller_id": self.callKitCenter.incomingCallerId as Any,
                              "support_video": self.callKitCenter.supportVideo as Any])
