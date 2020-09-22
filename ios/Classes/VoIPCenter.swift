@@ -27,7 +27,6 @@ class VoIPCenter: NSObject {
         case onDidReceiveIncomingPush
         case onDidAcceptIncomingCall
         case onDidRejectIncomingCall
-        case onDidEndCall
     }
 
     // MARK: - PushKit
@@ -63,7 +62,7 @@ class VoIPCenter: NSObject {
         super.init()
         self.eventChannel.setStreamHandler(self)
         self.pushRegistry.delegate = self
-        self.callKitCenter.setup(delegate: self)
+        //self.callKitCenter.setup(delegate: self)
     }
 }
 
@@ -83,18 +82,22 @@ extension VoIPCenter: PKPushRegistryDelegate {
 
         let info = self.parse(payload: payload)
         let callerName = info?["incoming_caller_name"] as! String
-        self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
-                                        callerId: info?["incoming_caller_id"] as! String,
-                                        callerName: callerName, hasVideo: info?["support_video"] as! Bool) { error in
-            if let error = error {
-                print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
-                return
-            }
-            self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
+        // self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
+        //                                 callerId: info?["incoming_caller_id"] as! String,
+        //                                 callerName: callerName, hasVideo: info?["support_video"] as! Bool) { error in
+        //     if let error = error {
+        //         print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
+        //         return
+        //     }
+        //     self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
+        //                      "payload": info as Any,
+        //                      "incoming_caller_name": callerName])
+        //     completion()
+        // }
+        self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
                              "payload": info as Any,
                              "incoming_caller_name": callerName])
             completion()
-        }
     }
 
     // NOTE: iOS10 support
@@ -104,17 +107,21 @@ extension VoIPCenter: PKPushRegistryDelegate {
 
         let info = self.parse(payload: payload)
         let callerName = info?["incoming_caller_name"] as! String
-        self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
-                                        callerId: info?["incoming_caller_id"] as! String,
-                                        callerName: callerName, hasVideo: info?["support_video"] as? Bool ?? false) { error in
-            if let error = error {
-                print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
-                return
-            }
-            self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
+        // self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
+        //                                 callerId: info?["incoming_caller_id"] as! String,
+        //                                 callerName: callerName, hasVideo: info?["support_video"] as? Bool ?? false) { error in
+        //     if let error = error {
+        //         print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
+        //         return
+        //     }
+        //     self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
+        //                      "payload": info as Any,
+        //                      "incoming_caller_name": callerName])
+        // }
+        self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
                              "payload": info as Any,
                              "incoming_caller_name": callerName])
-        }
+            completion()
     }
 
     private func parse(payload: PKPushPayload) -> [String: Any]? {
@@ -160,13 +167,7 @@ extension VoIPCenter: CXProviderDelegate {
                              "uuid": self.callKitCenter.uuidString as Any,
                              "incoming_caller_id": self.callKitCenter.incomingCallerId as Any,
                              "support_video": self.callKitCenter.supportVideo as Any])
-        } else {
-            print("❎ VoIP CXEndCallAction onDidEndCall")
-            self.eventSink?(["event": EventChannel.onDidEndCall.rawValue,
-                             "uuid": self.callKitCenter.uuidString as Any,
-                             "incoming_caller_id": self.callKitCenter.incomingCallerId as Any,
-                             "support_video": self.callKitCenter.supportVideo as Any])
-        }
+        } 
 
         self.callKitCenter.disconnected(reason: .remoteEnded)
         action.fulfill()
