@@ -27,6 +27,7 @@ class VoIPCenter: NSObject {
         case onDidReceiveIncomingPush
         case onDidAcceptIncomingCall
         case onDidRejectIncomingCall
+        case onDidEndCall
     }
 
     // MARK: - PushKit
@@ -167,7 +168,10 @@ extension VoIPCenter: CXProviderDelegate {
                              "uuid": self.callKitCenter.uuidString as Any,
                              "incoming_caller_id": self.callKitCenter.incomingCallerId as Any,
                              "support_video": self.callKitCenter.supportVideo as Any])
-        } 
+        } else{
+            self.eventSink?(["event": EventChannel.onDidEndCall.rawValue,
+                             "uuid": self.callKitCenter.uuidString as Any])
+        }
 
         self.callKitCenter.disconnected(reason: .remoteEnded)
         action.fulfill()

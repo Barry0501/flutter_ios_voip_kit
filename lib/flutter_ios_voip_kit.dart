@@ -17,6 +17,10 @@ typedef IncomingAction = void Function(
   String callerId,
 );
 
+typedef EndCallAction = void Function(
+  String uuid,
+);
+
 class FlutterIOSVoIPKit {
   static FlutterIOSVoIPKit get instance => _getInstance();
   static FlutterIOSVoIPKit _instance;
@@ -47,6 +51,7 @@ class FlutterIOSVoIPKit {
   /// If not called, make sure the app is calling [onDidAcceptIncomingCall] and [onDidRejectIncomingCall] in the Dart class(ex: main.dart) that is called immediately after the app is launched.
   IncomingAction onDidAcceptIncomingCall;
   IncomingAction onDidRejectIncomingCall;
+  EndCallAction onDidEndCall;
 
   StreamSubscription<dynamic> _eventSubscription;
 
@@ -219,6 +224,17 @@ class FlutterIOSVoIPKit {
         onDidRejectIncomingCall(
           map['uuid'],
           map['incoming_caller_id'],
+        );
+        break;
+        case 'onDidEndCall':
+        print('🎈 onDidEndCall($onDidEndCall): $map');
+
+        if (onDidEndCall == null) {
+          return;
+        }
+
+        onDidEndCall(
+          map['uuid'],
         );
         break;
     }
