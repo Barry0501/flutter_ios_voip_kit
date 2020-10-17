@@ -63,7 +63,7 @@ class VoIPCenter: NSObject {
         super.init()
         self.eventChannel.setStreamHandler(self)
         self.pushRegistry.delegate = self
-        //self.callKitCenter.setup(delegate: self)
+        self.callKitCenter.setup(delegate: self)
     }
 }
 
