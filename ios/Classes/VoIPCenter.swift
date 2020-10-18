@@ -63,7 +63,7 @@ class VoIPCenter: NSObject {
         super.init()
         self.eventChannel.setStreamHandler(self)
         self.pushRegistry.delegate = self
-        self.callKitCenter.setup(delegate: self)
+       // self.callKitCenter.setup(delegate: self)
     }
 }
 
@@ -79,22 +79,22 @@ extension VoIPCenter: PKPushRegistryDelegate {
     // NOTE: iOS11 or more support
 
     public func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType, completion: @escaping () -> Void) {
-        print("🎈 [pushRegistry - iOS11 or more support]VoIP didReceiveIncomingPushWith completion: \(payload.dictionaryPayload)")
-
-        let info = self.parse(payload: payload)
-        let callerName = info?["incoming_caller_name"] as! String
-        self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
-                                        callerId: info?["incoming_caller_id"] as! String,
-                                        callerName: callerName, hasVideo: info?["support_video"] as! Bool) { error in
-            if let error = error {
-                print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
-                return
-            }
-            self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
-                             "payload": info as Any,
-                             "incoming_caller_name": callerName])
-            completion()
-        }
+//        print("🎈 [pushRegistry - iOS11 or more support]VoIP didReceiveIncomingPushWith completion: \(payload.dictionaryPayload)")
+//
+//        let info = self.parse(payload: payload)
+//        let callerName = info?["incoming_caller_name"] as! String
+//        self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
+//                                        callerId: info?["incoming_caller_id"] as! String,
+//                                        callerName: callerName, hasVideo: info?["support_video"] as! Bool) { error in
+//            if let error = error {
+//                print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
+//                return
+//            }
+//            self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
+//                             "payload": info as Any,
+//                             "incoming_caller_name": callerName])
+//            completion()
+//        }
         // self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
         //                      "payload": info as Any,
         //                      "incoming_caller_name": callerName])
@@ -106,19 +106,19 @@ extension VoIPCenter: PKPushRegistryDelegate {
     public func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType) {
         print("🎈 VoIP didReceiveIncomingPushWith: \(payload.dictionaryPayload)")
 
-        let info = self.parse(payload: payload)
-        let callerName = info?["incoming_caller_name"] as! String
-        self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
-                                        callerId: info?["incoming_caller_id"] as! String,
-                                        callerName: callerName, hasVideo: info?["support_video"] as? Bool ?? false) { error in
-            if let error = error {
-                print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
-                return
-            }
-            self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
-                             "payload": info as Any,
-                             "incoming_caller_name": callerName])
-        }
+//        let info = self.parse(payload: payload)
+//        let callerName = info?["incoming_caller_name"] as! String
+//        self.callKitCenter.incomingCall(uuidString: info?["uuid"] as! String,
+//                                        callerId: info?["incoming_caller_id"] as! String,
+//                                        callerName: callerName, hasVideo: info?["support_video"] as? Bool ?? false) { error in
+//            if let error = error {
+//                print("❌ reportNewIncomingCall error: \(error.localizedDescription)")
+//                return
+//            }
+//            self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
+//                             "payload": info as Any,
+//                             "incoming_caller_name": callerName])
+//        }
         // self.eventSink?(["event": EventChannel.onDidReceiveIncomingPush.rawValue,
         //                      "payload": info as Any,
         //                      "incoming_caller_name": callerName])
@@ -192,3 +192,4 @@ extension VoIPCenter: FlutterStreamHandler {
         return nil
     }
 }
+
